@@ -1,16 +1,16 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Zotero Auto Tagger",
   "version": "1.0.0",
   "description": "Automatically tag Zotero items using OpenAI",
   "author": "Your Name",
-  "homepage_url": "https://github.com/yourusername/zotero-auto-tagger",
+  "homepage_url": "https://github.com/jomana-e/zotero-auto-tag",
   "applications": {
-    "zotero": {
+    "gecko": {
       "id": "zotero-auto-tagger@example.com",
-      "update_url": "https://raw.githubusercontent.com/yourusername/zotero-auto-tagger/main/update.json",
+      "update_url": "https://raw.githubusercontent.com/jomana-e/zotero-auto-tag/main/update.json",
       "strict_min_version": "6.0",
-      "strict_max_version": "7.0.*"
+      "strict_max_version": "7.*"
     }
   }
 } 
