@@ -1,12 +1,17 @@
-import { ProgressWindow } from "zotero-plugin-toolkit/dist/helpers/progressWindow";
+import { ZoteroToolkit } from "zotero-plugin-toolkit";
 import { config } from "../data/config";
 
 class AutoTagger {
+  private toolkit: ZoteroToolkit;
   private config = {
     gptApiEndpoint: 'https://api.openai.com/v1/chat/completions',
     gptModel: 'gpt-4-turbo-preview',
     maxPagesToProcess: 10
   };
+
+  constructor() {
+    this.toolkit = new ZoteroToolkit();
+  }
 
   async createEntryFromPDF(items: Zotero.Item[]): Promise<void> {
     if (!items.length) {
@@ -14,17 +19,17 @@ class AutoTagger {
       return;
     }
 
-    const progressWindow = new ProgressWindow("Processing PDFs");
+    const progressWindow = this.toolkit.getProgressWindow("Processing PDFs");
     progressWindow.show();
 
     try {
       for (const item of items) {
         if (item.isAttachment() && item.attachmentContentType === 'application/pdf') {
-          Zotero.debug(`Processing PDF: ${item.getField('title')}`);
+          this.toolkit.log(`Processing PDF: ${item.getField('title')}`);
           
           const filePath = await item.getFilePathAsync();
           if (!filePath) {
-            Zotero.debug("Could not get file path for PDF");
+            this.toolkit.log("Could not get file path for PDF");
             continue;
           }
 
@@ -37,9 +42,9 @@ class AutoTagger {
           const translatedItems = await translator.translate();
           
           if (translatedItems?.length > 0) {
-            Object.keys(translatedItems[0]).forEach(key => {
+            Object.entries(translatedItems[0]).forEach(([key, value]) => {
               if (key !== 'itemType') {
-                newItem.setField(key, translatedItems[0][key]);
+                newItem.setField(key as keyof Zotero.Item.ItemField, value);
               }
             });
             
@@ -47,15 +52,15 @@ class AutoTagger {
             item.parentID = newItem.id;
             await item.saveTx();
             
-            Zotero.debug("Successfully created entry from PDF");
+            this.toolkit.log("Successfully created entry from PDF");
           } else {
-            Zotero.debug("No metadata extracted from PDF");
+            this.toolkit.log("No metadata extracted from PDF");
           }
         }
       }
     } catch (error) {
       this.showError(`Error processing PDFs: ${error instanceof Error ? error.message : String(error)}`);
-      Zotero.debug(`Error in createEntryFromPDF: ${error instanceof Error ? error.stack : String(error)}`);
+      this.toolkit.log(`Error in createEntryFromPDF: ${error instanceof Error ? error.stack : String(error)}`);
     } finally {
       await Zotero.Promise.delay(2000);
       progressWindow.close();
@@ -68,18 +73,18 @@ class AutoTagger {
       return;
     }
 
-    const progressWindow = new ProgressWindow("Auto-tagging items");
+    const progressWindow = this.toolkit.getProgressWindow("Auto-tagging items");
     progressWindow.show();
 
     try {
       for (const item of items) {
         // Implementation for auto-tagging
         // This will be implemented based on your specific requirements
-        Zotero.debug(`Auto-tagging item: ${item.getField('title')}`);
+        this.toolkit.log(`Auto-tagging item: ${item.getField('title')}`);
       }
     } catch (error) {
       this.showError(`Error auto-tagging items: ${error instanceof Error ? error.message : String(error)}`);
-      Zotero.debug(`Error in autoTagItems: ${error instanceof Error ? error.stack : String(error)}`);
+      this.toolkit.log(`Error in autoTagItems: ${error instanceof Error ? error.stack : String(error)}`);
     } finally {
       await Zotero.Promise.delay(2000);
       progressWindow.close();
@@ -87,8 +92,8 @@ class AutoTagger {
   }
 
   private showError(message: string): void {
-    const progressWindow = new ProgressWindow("Error");
-    const progress = progressWindow.createLine({
+    const progressWindow = this.toolkit.getProgressWindow("Error");
+    progressWindow.createLine({
       text: message,
       type: "error"
     });

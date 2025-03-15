@@ -21,12 +21,23 @@ async function build() {
     target: ["firefox102"],
     minify: !isDev,
     sourcemap: isDev ? "inline" : false,
-    external: ["resource://*", "chrome://*"],
+    external: [
+      "resource://*", 
+      "chrome://*",
+      "zotero-plugin-toolkit",
+      "zotero-plugin-toolkit/*"
+    ],
+    format: "iife",
     loader: {
       ".ftl": "text",
     },
     define: {
       "process.env.NODE_ENV": isDev ? '"development"' : '"production"'
+    },
+    alias: {
+      "zotero-plugin-toolkit": path.resolve(__dirname, "node_modules/zotero-plugin-toolkit/dist/index.js"),
+      "zotero-plugin-toolkit/dist/helpers/locale": path.resolve(__dirname, "node_modules/zotero-plugin-toolkit/dist/helpers/locale.js"),
+      "zotero-plugin-toolkit/dist/helpers/progressWindow": path.resolve(__dirname, "node_modules/zotero-plugin-toolkit/dist/helpers/progressWindow.js")
     }
   };
 
