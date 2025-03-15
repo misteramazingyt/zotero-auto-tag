@@ -1,0 +1,35 @@
+{
+  "name": "zotero-auto-tagger",
+  "version": "1.0.0",
+  "description": "Automatically tag Zotero items using OpenAI",
+  "config": {
+    "addonName": "Zotero Auto Tagger",
+    "addonID": "zotero-auto-tagger@example.com",
+    "addonRef": "autoTagger",
+    "prebuilds": [],
+    "releasePage": "https://github.com/yourusername/zotero-auto-tagger/releases/latest/download/",
+    "updateJSON": "https://raw.githubusercontent.com/yourusername/zotero-auto-tagger/main/update.json"
+  },
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "node esbuild.js",
+    "start": "node esbuild.js --dev",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "release-it",
+    "postversion": "npm run build"
+  },
+  "author": "",
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "zotero-plugin-toolkit": "^2.3.27"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "compressing": "^1.10.0",
+    "esbuild": "^0.19.11",
+    "release-it": "^17.0.1",
+    "replace-in-file": "^7.1.0",
+    "typescript": "^5.3.3",
+    "zotero-types": "^1.3.16"
+  }
+} 
