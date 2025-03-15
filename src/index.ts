@@ -1,4 +1,4 @@
-import { BasicTool, ProgressWindow, unregister } from "zotero-plugin-toolkit";
+import { ZoteroToolkit, unregister } from "zotero-plugin-toolkit";
 import { config } from "./data/config";
 import { getString } from "./modules/locale";
 import autoTagger from "./modules/autoTagger";
@@ -6,7 +6,7 @@ import autoTagger from "./modules/autoTagger";
 class AutoTaggerPlugin {
   private data = {
     alive: true,
-    // You can store any plugin-specific data here
+    toolkit: new ZoteroToolkit()
   };
 
   // This is called when the plugin is loaded
@@ -50,7 +50,7 @@ class AutoTaggerPlugin {
             event.target.appendChild(createEntryMenuItem);
           }
         } catch (e) {
-          Zotero.debug("Error in Auto-Tagger menu popup: " + e);
+          this.data.toolkit.log("Error in Auto-Tagger menu popup: " + e);
         }
         
         return originalResult;
